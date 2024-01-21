@@ -1,13 +1,241 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+.outerBox {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+ul {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.taskSection {
+  width: 100%;
+  height: auto;
+}
+
+.innerBox {
+  margin: 5px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  box-sizing: border-box;
+  width: 24%;
+}
+.red {
+  color: #bd0000;
+}
+.imageBox {
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 110px;
+}
+
+.imageBox img {
+  width: 100%;
+  object-fit: contain;
+  height: 109px;
+}
+
+.buttonBox {
+  background-color: #f5f5f5;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.btnDiv {
+  width: 100%;
+  position: relative;
+  height: 60px;
+}
+.addBtn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.buttonBoxin {
+  margin: 5px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  width: 29%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px;
+  color: gray;
+  cursor: pointer;
+}
+
+.lftbr {
+  border-right: 1px solid gray;
+  border-radius: 0 !important;
+}
+.contentBox {
+  padding-left: 30px;
+}
+.contentBox ul li {
+  list-style: none;
+  padding-bottom: 10px;
+}
+.contentBox i {
+  margin-right: 5px;
+}
+.contentBox .hd {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.buttonBoxin:hover i.fa-heart {
+  color: #bd0000;
+}
+
+.buttonBoxin:hover i.fa-file-pen {
+  color: #6398d5;
+}
+
+.buttonBoxin:hover i.fa-trash-can {
+  color: #000;
+}
+@media only screen and (min-width: 200px) and (max-width: 760px) {
+  .innerBox {
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 360px) and (max-width: 740px) {
+}
+
+/*------------------------------------------------Media Query-------------------------------------------------------------------*/
+
+@media only screen and (min-width: 767px) and (max-width: 999px) {
+  .innerBox {
+    width: 30%;
+  }
+}
+
+@media only screen and (min-width: 820px) and (max-width: 1180px) {
+  .innerBox {
+    width: 31%;
+  }
+}
+
+/*------------------------------------------------Modal-------------------------------------------------------------------*/
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  width: 500px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.attractive-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 1px;
+  font-weight: 600;
+  font-size: 14px;
+}
+input {
+  padding: 8px;
+  width: 100%;
+  margin: 0;
+  border-radius: 6px;
+  border: 1px solid gray;
+}
+#isFav {
+  width: 20px;
+}
+.submit {
+  padding: 8px;
+  width: 100%;
+  margin: 0;
+  border-radius: 6px;
+  border: 1px solid #6398d5;
+  background-color: #6398d5;
+}
+
+.loaderDiv {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 97vh;
+}
+
+.loader {
+  width: 60px;
+  aspect-ratio: 4;
+  --_g: no-repeat radial-gradient(circle closest-side, #000 90%, #0000);
+  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 100%;
+  animation: l7 1s infinite linear;
+}
+@keyframes l7 {
+  33% {
+    background-size: calc(100% / 3) 0%, calc(100% / 3) 100%, calc(100% / 3) 100%;
+  }
+  50% {
+    background-size: calc(100% / 3) 100%, calc(100% / 3) 0%, calc(100% / 3) 100%;
+  }
+  66% {
+    background-size: calc(100% / 3) 100%, calc(100% / 3) 100%, calc(100% / 3) 0%;
+  }
+}
+.erorr {
+  margin: 0;
+  padding: 0;
+  color: #bd0000;
+  font-size: 14px;
+  font-weight: 500;
 }
