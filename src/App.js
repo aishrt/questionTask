@@ -138,7 +138,7 @@ function App() {
     e.preventDefault();
     if (validateForm()) {
       const updatedList = [...dataList];
-      if (indexVal != "") {
+      if (indexVal !== "") {
         updatedList[indexVal] = { ...formData };
         setIndex("");
         setDataList(updatedList);
