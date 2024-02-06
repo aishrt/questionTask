@@ -1,168 +1,81 @@
-import React, { useState } from "react";
-import pic from "./assets/40542.jpg";
+import React, { useEffect, useState } from "react";
 import "./App.css";
+import questionsData from "./questions.json";
 
 function App() {
   const [loader, setLoader] = useState(true);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [indexVal, setIndex] = useState(false);
-  const [formData, setFormData] = useState({
-    namess: "",
-    email: "",
-    phone: "",
-    url: "",
-    isFav: false,
-  });
-
   setTimeout(() => {
     setLoader(false);
   }, [1700]);
 
-  const [formErrors, setFormErrors] = useState({
-    namess: "",
-    email: "",
-    phone: "",
-    url: "",
-  });
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [percent, setPercent] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState("");
+  const [showResult, setShowResult] = useState(false);
 
-  const [dataList, setDataList] = useState([
-    {
-      namess: "Aish",
-      email: "aish@gmail.com",
-      phone: "9987589568",
-      url: "https://example.com",
-      isFav: true,
-    },
-    {
-      namess: "Kiran",
-      email: "kiran@gmail.com",
-      phone: "9987589568",
-      url: "https://example.com",
-      isFav: true,
-    },
-    {
-      namess: "Krish",
-      email: "krish@gmail.com",
-      phone: "9987589568",
-      url: "https://example.com",
-      isFav: false,
-    },
-    {
-      namess: "Shree",
-      email: "shree@gmail.com",
-      phone: "9987589568",
-      url: "https://example.com",
-      isFav: true,
-    },
-    {
-      namess: "Manoj",
-      email: "monaj@gmail.com",
-      phone: "9987589568",
-      url: "https://example.com",
-      isFav: false,
-    },
-    {
-      namess: "Bhadur",
-      email: "bhadur@gmail.com",
-      phone: "9987589568",
-      url: "https://example.com",
-      isFav: false,
-    },
-    {
-      namess: "Ankit",
-      email: "ankit@gmail.com",
-      phone: "9987589568",
-      url: "https://example.com",
-      isFav: true,
-    },
-  ]);
-
-  const toggleModal = (index) => {
-    if (typeof index === "number") {
-      setFormData({ ...dataList[index] });
-      setIndex(index);
+  useEffect(() => {
+    // const indexVal = currentQuestionIndex + 1;
+    const per = (currentQuestionIndex / 20) * 100;
+    setPercent(per);
+  }, [currentQuestionIndex]);
+  const handleAnswerClick = (answer) => {
+    if (answer === questionsData[currentQuestionIndex].correct_answer) {
+      setShowResult(true);
     } else {
-      setFormData({
-        namess: "",
-        email: "",
-        phone: "",
-        url: "",
-        isFav: false,
-      });
+      setShowResult(false);
     }
-    setModalOpen(!isModalOpen);
-  };
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    // Clear the corresponding field's error when the user types
-    setFormErrors({
-      ...formErrors,
-      [name]: "",
-    });
+    setSelectedAnswer(answer);
   };
 
-  const handleToggleFavorite = (index) => {
-    const updatedList = [...dataList];
-    updatedList[index].isFav = !updatedList[index].isFav;
-    setDataList(updatedList);
+  const handleNextQuestion = () => {
+    setShowResult(false);
+    setSelectedAnswer("");
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
   };
 
-  const validateForm = () => {
-    const { namess, email, phone, url } = formData;
-    const newFormErrors = {};
-    if (!namess.trim()) {
-      newFormErrors.namess = "Name is required.";
-    }
-    if (!email.trim()) {
-      newFormErrors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newFormErrors.email = "Invalid email format.";
-    }
-    if (!phone.trim()) {
-      newFormErrors.phone = "Phone is required.";
-    } else if (!/^[6-9]\d{9}$/.test(phone)) {
-      newFormErrors.phone = "Invalid phone number.";
-    }
-    if (!url.trim()) {
-      newFormErrors.url = "URL is required.";
-    }
-    setFormErrors(newFormErrors);
-    return Object.keys(newFormErrors).length === 0;
-  };
+  const renderStars = (difficulty) => {
+    let count = 0;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      const updatedList = [...dataList];
-      if (indexVal !== "") {
-        updatedList[indexVal] = { ...formData };
-        setIndex("");
-        setDataList(updatedList);
+    if (difficulty === "easy") {
+      count = 1;
+    } else if (difficulty === "easy") {
+      count = 2;
+    } else {
+      count = 3;
+    }
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      if (i < count) {
+        stars.push(
+          <span key={i}>
+            <i className="fa-solid fa-star"></i>
+          </span>
+        );
       } else {
-        setDataList([...dataList, { ...formData }]);
+        stars.push(
+          <span key={i}>
+            <i className="fa-regular fa-star"></i>
+          </span>
+        );
       }
-      setModalOpen(false);
-      setFormData({
-        namess: "",
-        email: "",
-        phone: "",
-        url: "",
-        isFav: false,
-      });
-    } else {
-      // Form is not valid, display error messages
-      console.log("Form is not valid");
     }
+    return stars;
   };
 
-  const handleDelete = (index) => {
-    const updatedList = [...dataList];
-    updatedList.splice(index, 1);
-    setDataList(updatedList);
+  const renderOptions = () => {
+    return questionsData[currentQuestionIndex].incorrect_answers
+      .concat(questionsData[currentQuestionIndex].correct_answer)
+      .sort()
+      .map((answer, index) => (
+        <div key={index}>
+          <div
+            className="selectButton"
+            onClick={() => handleAnswerClick(answer)}
+          >
+            {answer}
+          </div>
+        </div>
+      ));
   };
 
   return (
@@ -173,133 +86,46 @@ function App() {
         </div>
       ) : (
         <>
-          <div className="taskSection">
-            <div className="btnDiv">
-              <button className="addBtn" onClick={() => toggleModal()}>
-                Add
-              </button>
-            </div>
-            <div className="outerBox">
-              {dataList.map((item, index) => (
-                <div className="innerBox" key={index}>
-                  <div className="imageBox">
-                    <img src={pic} alt="pica" />
+          <progress
+            className="progresbars"
+            value={percent}
+            max="100"
+          ></progress>
+          <div className="container">
+            {/* <h1>{percent}</h1> */}
+            <div className="mainBox">
+              <div className="innerBox">
+                <div className="hd1">
+                  Question {currentQuestionIndex + 1} of 20
+                </div>
+                <div className="hd2">
+                  {questionsData[currentQuestionIndex].category}
+                </div>
+                <div>
+                  {renderStars(questionsData[currentQuestionIndex].difficulty)}
+                </div>
+                <div>
+                  {decodeURIComponent(
+                    questionsData[currentQuestionIndex].question
+                  )}
+                </div>
+                <form>{renderOptions()}</form>
+                {selectedAnswer && (
+                  <div>
+                    {selectedAnswer ===
+                    questionsData[currentQuestionIndex].correct_answer ? (
+                      <span className="correct">Correct</span>
+                    ) : (
+                      <span className="error">Sorry. Please try again.</span>
+                    )}
                   </div>
-                  <div className="contentBox">
-                    <p className="hd">{item.namess} </p>
-                    <ul>
-                      <li>
-                        <i className="fa-solid fa-envelope"></i> {item.email}
-                      </li>
-                      <li>
-                        <i className="fa-solid fa-phone-volume"></i>{" "}
-                        {item.phone}
-                      </li>
-                      <li>
-                        <i className="fa-solid fa-globe"></i> {item.url}
-                      </li>
-                    </ul>
+                )}
+                {selectedAnswer && (
+                  <div className="nextDiv">
+                    <button onClick={handleNextQuestion}>Next Question</button>
                   </div>
-                  <div className="buttonBox">
-                    <div
-                      className="buttonBoxin lftbr"
-                      onClick={() => handleToggleFavorite(index)}
-                    >
-                      {item.isFav ? (
-                        <i className="fa-solid fa-heart red"></i>
-                      ) : (
-                        <i className="fa-regular fa-heart"></i>
-                      )}
-                    </div>
-                    <div
-                      className="buttonBoxin lftbr"
-                      onClick={() => toggleModal(index)}
-                    >
-                      <i className="fa-solid fa-file-pen"></i>
-                    </div>
-                    <div
-                      className="buttonBoxin"
-                      onClick={() => handleDelete(index)}
-                    >
-                      <i className="fa-solid fa-trash-can"></i>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className={`modal ${isModalOpen ? "open" : ""}`}>
-            <div className="modal-content">
-              <span className="close-btn" onClick={toggleModal}>
-                &times;
-              </span>
-              <form onSubmit={handleSubmit} className="attractive-form">
-                <div className="form-group">
-                  <label htmlFor="namess">Name:</label>
-                  <input
-                    type="text"
-                    id="namess"
-                    name="namess"
-                    value={formData.namess}
-                    onChange={handleInputChange}
-                  />
-                  <p className="erorr">{formErrors.namess}</p>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="email">Email:</label>
-                  <input
-                    type="text"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                  />
-                  <p className="erorr">{formErrors.email}</p>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="phone">Phone:</label>
-                  <input
-                    type="text"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                  />
-                  <p className="erorr">{formErrors.phone}</p>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="url">URL:</label>
-                  <input
-                    type="text"
-                    id="url"
-                    name="url"
-                    value={formData.url}
-                    onChange={handleInputChange}
-                  />
-                  <p className="erorr">{formErrors.url}</p>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="isFav">Is Favorite:</label>
-                  <input
-                    type="checkbox"
-                    id="isFav"
-                    name="isFav"
-                    checked={formData.isFav}
-                    onChange={() =>
-                      setFormData({ ...formData, isFav: !formData.isFav })
-                    }
-                  />
-                </div>
-
-                <button className="submit" type="submit">
-                  Submit
-                </button>
-              </form>
+                )}
+              </div>
             </div>
           </div>
         </>
